@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import { Button, Input, Text } from 'react-native-elements';
 import auth from '@react-native-firebase/auth';
+import database from '@react-native-firebase/database';
 
 // Imports: Redux Actions
 import { connect } from 'react-redux';
@@ -24,6 +25,20 @@ export class Login extends Component {
     };
   }
 
+  setOnline = (uid) => {
+    database()
+      .ref(`/Users/${uid}`)
+      .update({
+        status: true,
+      })
+      .then(() => {
+        ToastAndroid.show('Login Sukses', ToastAndroid.SHORT);
+      })
+      .catch(() => {
+        ToastAndroid.show('Terjadi gangguan, coba lagi', ToastAndroid.SHORT);
+      });
+  }
+
   onLogin = async () => {
     const { email, password } = this.state;
     if (email && password) {
@@ -34,8 +49,8 @@ export class Login extends Component {
           email: authCheck.user.email,
           uid: authCheck.user.uid,
         });
+        this.setOnline(authCheck.user.uid);
         this.setState({ isLoading: false });
-        ToastAndroid.show('Login Sukses', ToastAndroid.SHORT);
       } catch (error) {
         ToastAndroid.show(error.code, ToastAndroid.SHORT);
         this.setState({ isLoading: false });

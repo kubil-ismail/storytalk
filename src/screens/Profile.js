@@ -18,6 +18,8 @@ import { logout } from '../redux/actions/authActions';
 import Header from '../component/Header';
 import Loader from '../component/Loader';
 
+import database from '@react-native-firebase/database';
+
 export class Profile extends Component {
   constructor(props) {
     super(props);
@@ -26,10 +28,26 @@ export class Profile extends Component {
     };
   }
 
+  setOffline = () => {
+    const { uid } = this.props.auth;
+    database()
+      .ref(`/Users/${uid}`)
+      .update({
+        status: false,
+      })
+      .then(() => {
+        ToastAndroid.show('Logout Berhasil', ToastAndroid.SHORT);
+      })
+      .catch(() => {
+        ToastAndroid.show('Terjadi gangguan, coba lagi', ToastAndroid.SHORT);
+      });
+  }
+
   onLogout = async () => {
     try {
       this.setState({ isLoading: true });
       await auth().signOut();
+      this.setOffline();
       this.props.logout();
       this.setState({ isLoading: false });
     } catch (error) {

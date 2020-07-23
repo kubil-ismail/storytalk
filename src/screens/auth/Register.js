@@ -34,11 +34,11 @@ export class Register extends Component {
           this.setState({ isLoading: true });
           try {
             const authCheck = await auth().createUserWithEmailAndPassword(email, password);
-            ToastAndroid.show('Daftar Sukses', ToastAndroid.SHORT);
             this.props.register({
               email: authCheck.user.email,
               uid: authCheck.user.uid,
             });
+            ToastAndroid.show('Daftar Sukses', ToastAndroid.SHORT);
             this.setState({ isLoading: false });
             this.props.navigation.navigate('account');
           } catch (error) {

@@ -3,12 +3,14 @@
 const initialState = {
   location: [],
   shareLocation: false,
+  friends: [],
+  friendsKey: [],
 };
 
 // Reducers (Modifies The State And Returns A New State)
 const authReducer = (state = initialState, action) => {
   switch (action.type) {
-    // Login
+    // Location
     case 'LOCATION': {
       const { location } = action.payload;
       return {
@@ -16,6 +18,16 @@ const authReducer = (state = initialState, action) => {
         ...{
           location,
           shareLocation: true,
+        },
+      };
+    }
+    case 'FRIENDS': {
+      const { friends, friendsKey } = action.payload;
+      return {
+        ...state,
+        ...{
+          friends,
+          friendsKey,
         },
       };
     }

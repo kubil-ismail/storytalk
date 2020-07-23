@@ -86,6 +86,23 @@ export class Location extends Component {
         >
           <Header title="Lokasi" />
           <View style={styles.container}>
+            {/* Handle Alert */}
+            {friends_.length === 0 && (
+              <View
+                style={styles.center}
+              >
+                <Image
+                  source={require('../assets/svg/undraw_Map_dark_k9pw.png')}
+                  resizeMode="contain"
+                  style={styles.svg}
+                />
+                <Text h4>Lokasi Teman</Text>
+                <Text style={styles.textCenter}>
+                  Lihat lokasi teman mu dan mulai sapa mereka
+                </Text>
+              </View>
+            )}
+            {/* Button Location */}
             {!shareLocation && (
               <Button
                 title="Bagikan Lokasi"
@@ -98,21 +115,7 @@ export class Location extends Component {
                 onPress={() => this.shareLocation()}
               />
             )}
-            {isLoading && friends_.length === 0 && (
-              <View
-                style={styles.center}
-              >
-                <Image
-                  source={require('../assets/svg/undraw_opened_gi4n.png')}
-                  resizeMode="contain"
-                  style={styles.svg}
-                />
-                <Text h4>Lokasi Teman</Text>
-                <Text style={styles.textCenter}>
-                  Lihat lokasi teman mu dan mulai sapa mereka
-                </Text>
-              </View>
-            )}
+            {/* Loop Data */}
             {!isLoading && friends_.map((val, key) => (
               <TouchableOpacity
                 key={key}
@@ -150,6 +153,7 @@ const styles = StyleSheet.create({
   center: {
     flex: 1,
     alignItems: 'center',
+    marginBottom: 30,
   },
   textCenter: {
     textAlign: 'center',

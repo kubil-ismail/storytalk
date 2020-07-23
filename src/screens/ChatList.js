@@ -59,7 +59,7 @@ export default class ChatList extends Component {
           <Header title="Obrolan" />
           <View style={styles.container}>
             {/* Handle Alert */}
-            {isLoading && friends_.length === 0 && (
+            {friends_.length === 0 && (
               <View
                 style={styles.center}
               >

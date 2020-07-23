@@ -63,12 +63,12 @@ export class Friends extends Component {
           <Header title="Teman" />
           <View style={styles.container}>
             {/* Handle Alert */}
-            {isLoading && friends_.length === 0 && (
+            {friends_.length === 0 && (
               <View
                 style={styles.center}
               >
                 <Image
-                  source={require('../assets/svg/undraw_opened_gi4n.png')}
+                  source={require('../assets/svg/undraw_messages1_9ah2.png')}
                   resizeMode="contain"
                   style={styles.svg}
                 />

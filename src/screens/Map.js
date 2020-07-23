@@ -1,28 +1,26 @@
 /* eslint-disable prettier/prettier */
 import React, {Component} from 'react';
-import MapView, { PROVIDER_GOOGLE, Marker  } from 'react-native-maps';
+import MapView, { Marker  } from 'react-native-maps';
 import { View, StyleSheet, Image }  from 'react-native';
 
 export default class Map extends Component {
   render() {
-    const { name } = this.props.route.params;
+    const { name, latitude, longitude } = this.props.route.params;
     return (
       <View style={styles.container}>
         <MapView
           style={styles.map}
-          // provider={PROVIDER_GOOGLE}
           initialRegion={{
-            latitude: 37.78825,
-            longitude: -122.4324,
+            latitude: latitude,
+            longitude: longitude,
             latitudeDelta: 0.015,
             longitudeDelta: 0.0121,
           }}
-          // showsUserLocation={true}
         >
           <Marker
             coordinate={{
-              latitude: 37.78825,
-              longitude: -122.4324,
+              latitude: latitude,
+              longitude: longitude,
             }}
             title={name}
             description={name}

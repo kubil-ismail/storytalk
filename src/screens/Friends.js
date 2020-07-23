@@ -5,6 +5,7 @@ import {
   ScrollView,
   StyleSheet,
   TouchableOpacity,
+  RefreshControl,
   View,
 } from 'react-native';
 
@@ -48,7 +49,15 @@ export class Friends extends Component {
     const { friends_, isLoading } = this.state;
     return (
       <SafeAreaView style={styles.scaffold}>
-        <ScrollView>
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              refreshing={isLoading}
+              progressViewOffset={100}
+              onRefresh={this.getAllFriends()}
+            />
+          }
+        >
           <Header title="Teman" />
           <View style={styles.container}>
             {!isLoading && friends_.map((val, key) => (

@@ -7,9 +7,13 @@ import {
   View,
   TouchableOpacity,
   ToastAndroid,
+  RefreshControl,
 } from 'react-native';
 import { Button } from 'react-native-elements';
 import Geolocation from '@react-native-community/geolocation';
+
+// Imports: Firebase
+import database from '@react-native-firebase/database';
 
 // Imports: Redux Actions
 import { connect } from 'react-redux';
@@ -19,18 +23,6 @@ import { location } from '../redux/actions/profileActions';
 import Header from '../component/Header';
 import Item from '../component/Items';
 
-const list = [
-  {
-    name: 'Amy Farha',
-    subtitle: 'Dibagikan 1 jam yang lalu',
-  },
-  {
-    name: 'Chris Jackson',
-    subtitle: 'Dibagikan 1 jam yang lalu',
-  },
-];
-
-import database from '@react-native-firebase/database';
 
 export class Location extends Component {
   constructor(props) {
@@ -82,7 +74,15 @@ export class Location extends Component {
     const { friends_, isLoading } = this.state;
     return (
       <SafeAreaView style={styles.scaffold}>
-        <ScrollView>
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              refreshing={isLoading}
+              progressViewOffset={100}
+              onRefresh={this.getAllFriends()}
+            />
+          }
+        >
           <Header title="Lokasi" />
           <View style={styles.container}>
             {!shareLocation && (

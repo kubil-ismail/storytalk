@@ -6,13 +6,15 @@ import {
   StyleSheet,
   TouchableOpacity,
   View,
+  RefreshControl,
 } from 'react-native';
+
+// Imports: Firebase
+import database from '@react-native-firebase/database';
 
 // Component
 import Header from '../component/Header';
 import Item from '../component/Items';
-
-import database from '@react-native-firebase/database';
 
 export default class ChatList extends Component {
   constructor(props) {
@@ -44,7 +46,15 @@ export default class ChatList extends Component {
     const { friends_, isLoading } = this.state;
     return (
       <SafeAreaView style={styles.scaffold}>
-        <ScrollView>
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              refreshing={isLoading}
+              onRefresh={this.getAllFriends()}
+              progressViewOffset={100}
+            />
+          }
+        >
           <Header title="Obrolan" />
           <View style={styles.container}>
             {!isLoading && friends_.map((val, key) => (

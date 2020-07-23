@@ -8,7 +8,9 @@ import {
   ToastAndroid,
 } from 'react-native';
 import { Avatar, Button, Input } from 'react-native-elements';
-import auth from '@react-native-firebase/auth';
+
+// Imports: Firebase
+import database from '@react-native-firebase/database';
 
 // Imports: Redux Actions
 import { connect } from 'react-redux';
@@ -24,6 +26,32 @@ export class Account extends Component {
     };
   }
 
+  addNew = (data) => {
+    database()
+      .ref(`/Users/${data.uid}`)
+      .set({
+        displayName: data.displayName,
+        phoneNumber: data.phoneNumber,
+        email: data.email,
+        uid: data.uid,
+        latitude: '0',
+        longitude: '0',
+        status: true,
+      })
+      .then(() => {
+        this.props.account(data);
+        this.props.login({
+          email: data.email,
+          uid: data.uid,
+        });
+        this.setState({ isLoading: false });
+        ToastAndroid.show('Berhasil Login', ToastAndroid.SHORT);
+      })
+      .catch(() => {
+        ToastAndroid.show('Terjadi gangguan, coba lagi', ToastAndroid.SHORT);
+      });
+  }
+
   updateProfile = async () => {
     const { fullname, phone } = this.state;
     if (fullname && phone) {
@@ -33,11 +61,10 @@ export class Account extends Component {
         const update = {
           displayName: fullname,
           phoneNumber: phone,
+          email: email,
+          uid: uid,
         };
-        await auth().currentUser.updateProfile(update);
-        this.props.account(update);
-        this.props.login({ email, uid });
-        this.setState({ isLoading: false });
+        this.addNew(update);
       } catch (error) {
         this.setState({ isLoading: false });
         ToastAndroid.show(error.code, ToastAndroid.SHORT);

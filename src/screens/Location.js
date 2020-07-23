@@ -30,15 +30,56 @@ const list = [
   },
 ];
 
+import database from '@react-native-firebase/database';
+
 export class Location extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      friends_: [],
+      isLoading: true,
+    };
+  }
+
+  getAllFriends = () => {
+    database()
+      .ref('/Users')
+      .on('value', snapshot => {
+        const { value } = snapshot._snapshot;
+        const result = Object.keys(value).map((key) => [Number(key), value[key]]);
+        this.setState({
+          friends_: result,
+          isLoading: false,
+        });
+      });
+  }
+
   shareLocation = () => {
+    const { uid } = this.props.auth;
     Geolocation.getCurrentPosition(info => {
       this.props.location({ location: info.coords });
-      ToastAndroid.show('Lokasi berhasil dibagikan', ToastAndroid.SHORT);
+      database()
+        .ref(`/Users/${uid}`)
+        .update({
+          latitude: info.coords.latitude,
+          longitude: info.coords.longitude,
+        })
+        .then(() => {
+          ToastAndroid.show('Lokasi berhasil dibagikan', ToastAndroid.SHORT);
+        })
+        .catch(() => {
+          ToastAndroid.show('Terjadi gangguan, coba lagi', ToastAndroid.SHORT);
+        });
     });
   }
+
+  componentDidMount = () => {
+    this.getAllFriends();
+  }
+
   render() {
     const { shareLocation } = this.props.profile;
+    const { friends_, isLoading } = this.state;
     return (
       <SafeAreaView style={styles.scaffold}>
         <ScrollView>
@@ -56,24 +97,25 @@ export class Location extends Component {
                 onPress={() => this.shareLocation()}
               />
             )}
-            {
-              list.map((val, key) => (
-                <TouchableOpacity
+            {!isLoading && friends_.map((val, key) => (
+              <TouchableOpacity
+                key={key}
+                onPress={() => this.props.navigation.navigate('detail_map', {
+                  name: val[1].displayName,
+                  latitude: val[1].latitude,
+                  longitude: val[1].longitude,
+                })}
+              >
+                <Item
+                  id={key}
                   key={key}
-                  onPress={() => this.props.navigation.navigate('detail_map', {
-                    name: val.name,
-                  })}
-                >
-                  <Item
-                    id={key}
-                    key={key}
-                    title={val.name}
-                    subtitle={val.subtitle}
-                    url="null"
-                  />
-                </TouchableOpacity>
-              ))
-            }
+                  title={val[1].displayName}
+                  subtitle="Detail lokasi"
+                  url="null"
+                  chevron
+                />
+              </TouchableOpacity>
+            ))}
           </View>
         </ScrollView>
       </SafeAreaView>

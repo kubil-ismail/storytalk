@@ -8,6 +8,9 @@ import {
   ToastAndroid,
 } from 'react-native';
 import { Avatar, Button, Input } from 'react-native-elements';
+import validator from 'validator';
+
+// Imports: Firebase
 import auth from '@react-native-firebase/auth';
 
 // Imports: Redux Actions
@@ -28,19 +31,27 @@ export class EditProfile extends Component {
   updateProfile = async () => {
     const { fullname, phone } = this.state;
     if (fullname && phone) {
-      try {
-        this.setState({ isLoading: true });
-        const update = {
-          displayName: fullname,
-          phoneNumber: phone,
-        };
-        await auth().currentUser.updateProfile(update);
-        this.props.account(update);
-        this.setState({ isLoading: false });
-        ToastAndroid.show('Update profile berhasil', ToastAndroid.SHORT);
-      } catch (error) {
-        this.setState({ isLoading: false });
-        ToastAndroid.show(error.code, ToastAndroid.SHORT);
+      if (validator.isByteLength(fullname, { min: 2, max: 25 })) {
+        if (validator.isMobilePhone(phone, ['id-ID'])) {
+          try {
+            this.setState({ isLoading: true });
+            const update = {
+              displayName: fullname,
+              phoneNumber: phone,
+            };
+            await auth().currentUser.updateProfile(update);
+            this.props.account(update);
+            this.setState({ isLoading: false });
+            ToastAndroid.show('Update profile berhasil', ToastAndroid.SHORT);
+          } catch (error) {
+            this.setState({ isLoading: false });
+            ToastAndroid.show(error.code, ToastAndroid.SHORT);
+          }
+        } else {
+          ToastAndroid.show('No Telephone harus valid', ToastAndroid.SHORT);
+        }
+      } else {
+        ToastAndroid.show('Panjang nama 2 - 5 karakter', ToastAndroid.SHORT);
       }
     } else {
       ToastAndroid.show('Semua input harus terpenuhi', ToastAndroid.SHORT);

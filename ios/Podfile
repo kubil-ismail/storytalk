@@ -42,6 +42,8 @@ target 'storytalk' do
 
   pod 'RNCAsyncStorage', :path => '../node_modules/@react-native-community/async-storage'
 
+  pod 'react-native-splash-screen', :path => '../node_modules/react-native-splash-screen'
+
   target 'storytalkTests' do
     inherit! :search_paths
     # Pods for testing

@@ -39,6 +39,7 @@ export class Profile extends Component {
   }
   render() {
     const { fullname, email, phone } = this.props.auth;
+    const { location, shareLocation } = this.props.profile;
     const list = [
       {
         name: 'Email',
@@ -46,11 +47,7 @@ export class Profile extends Component {
       },
       {
         name: 'Nomor telepon',
-        subtitle: phone.replace(/(\d{4})(\d{4})(\d{4})/, '$1-$2-$3'),
-      },
-      {
-        name: 'Lokasi Pengguna',
-        subtitle: 'Jakarta',
+        subtitle: phone ? phone.replace(/(\d{4})(\d{4})(\d{4})/, '$1-$2-$3') : 'Uknown',
       },
     ];
     return (
@@ -65,22 +62,17 @@ export class Profile extends Component {
                 <Avatar
                   // rounded
                   size="medium"
-                  title={fullname.slice(0,2)}
+                  title={fullname ? fullname.slice(0,2) : '-'}
                   showEditButton
                   // eslint-disable-next-line react-native/no-inline-styles
                   overlayContainerStyle={{ backgroundColor: '#bcbec1' }}
                   activeOpacity={0.7}
-                />
-              }
-              title={fullname}
+                  />
+                }
+              title={fullname || 'Unknown'}
               subtitle="Online"
               bottomDivider
-              onPress={() => this.props.navigation.navigate('detail_profile',{
-                name: fullname,
-                fullname: fullname,
-                email: email,
-                phone: phone,
-              })}
+              onPress={() => this.props.navigation.navigate('edit_profile')}
               chevron
             />
             {
@@ -92,12 +84,19 @@ export class Profile extends Component {
                 />
               ))
             }
-            <ListItem
-              key={5}
-              title="Edit Profile"
-              onPress={() => this.props.navigation.navigate('edit_profile')}
-              chevron
-            />
+            {shareLocation && (
+              <ListItem
+                key={4}
+                title="Lokasi Pengguna"
+                onPress={() => this.props.navigation.navigate('detail_map',
+                {
+                  latitude: location.latitude,
+                  longitude: location.longitude,
+                  name: fullname ? fullname : 'Unknown',
+                })}
+                chevron
+              />
+            )}
             <ListItem
               key={6}
               title="Ubah Password"
@@ -147,6 +146,7 @@ const mapStateToProps = (state) => {
   // Redux Store --> Component
   return {
     auth: state.authReducer,
+    profile: state.profileReducer,
   };
 };
 

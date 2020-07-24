@@ -87,6 +87,7 @@ export default class ChatList extends Component {
                   id={key}
                   title={val[1].displayName}
                   subtitle={val[1].status ? 'Online' : 'Offline'}
+                  photo={val[1].photo}
                 />
               </TouchableOpacity>
             ))}

@@ -93,7 +93,7 @@ export class Chat extends Component {
   }
 
   render() {
-    const { fullname, uid } = this.props.auth;
+    const { fullname, uid, photo } = this.props.auth;
     const { messages } = this.state;
     return (
       <GiftedChat
@@ -104,6 +104,7 @@ export class Chat extends Component {
         user={{
           _id: uid,
           name: fullname,
+          avatar: photo,
         }}
         showUserAvatar
         scrollToBottom

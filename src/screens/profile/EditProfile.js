@@ -13,6 +13,7 @@ import ImagePicker from 'react-native-image-picker';
 
 // Imports: Firebase
 import database from '@react-native-firebase/database';
+import storage from '@react-native-firebase/storage';
 
 // Imports: Redux Actions
 import { connect } from 'react-redux';
@@ -21,59 +22,94 @@ import { account } from '../../redux/actions/authActions';
 export class EditProfile extends Component {
   constructor(props) {
     super(props);
-    const { fullname, phone } = this.props.auth;
+    const { fullname, phone, photo } = this.props.auth;
     this.state = {
       fullname: fullname,
       phone: phone,
       isLoading: false,
-      filepath: {
-        data: '',
-        uri: '',
-      },
-      fileData: '',
+      photo: photo,
       fileUri: '',
     };
   }
 
   chooseImage = () => {
+    this.setState({ isLoading: true });
     let options = {
       title: 'Pilih foto',
-      customButtons: [
-        { name: 'customOptionKey', title: 'Choose Photo from Custom Option' },
-      ],
       storageOptions: {
         skipBackup: true,
         path: 'images',
       },
     };
-    ImagePicker.showImagePicker(options, (response) => {
+    ImagePicker.launchImageLibrary(options, (response) => {
       if (response.didCancel) {
         ToastAndroid.show('Pilih foto dibatalkan', ToastAndroid.SHORT);
+        this.setState({ isLoading: false });
       } else if (response.error) {
         ToastAndroid.show('Terdapat kesalahan', ToastAndroid.SHORT);
+        this.setState({ isLoading: false });
       } else if (response.customButton) {
         ToastAndroid.show('Terdapat kesalahan', ToastAndroid.SHORT);
-      } else if (response.fileSize >= 2077116) {
-        ToastAndroid.show('Maksimal ukuran 2 Mb', ToastAndroid.SHORT);
+        this.setState({ isLoading: false });
+      } else if (response.fileSize >= 1077116) {
+        ToastAndroid.show('Maksimal ukuran 1 Mb', ToastAndroid.SHORT);
+        this.setState({ isLoading: false });
       } else {
-        this.setState({
-          filePath: response,
-          fileData: response.data,
-          fileUri: response.uri,
-        });
+        const filename = response.fileName;
+        const pathToFile = response.path;
+        if (filename && pathToFile) {
+          const reference = storage().ref(filename);
+          reference.putFile(pathToFile)
+            .then(async () => {
+              this.setState({ isLoading: false });
+              this.setState({
+                fileUri: response.uri,
+                isLoading: false,
+              });
+              const url = await storage()
+                .ref(filename)
+                .getDownloadURL();
+              this.updatePhoto(url);
+              ToastAndroid.show('Foto berhasil di ubah', ToastAndroid.SHORT);
+            })
+            .catch(() => {
+              ToastAndroid.show('Foto gagal di ubah', ToastAndroid.SHORT);
+              this.setState({ isLoading: false });
+            });
+        }
       }
     });
   }
 
+  updatePhoto = (data) => {
+    const { displayName, phoneNumber, uid } = this.props.auth;
+    database()
+      .ref(`/Users/${uid}`)
+      .update({
+        photo: data,
+      })
+      .then(() => {
+        this.props.account({
+          displayName,
+          phoneNumber,
+          photo: data,
+        });
+        ToastAndroid.show('Foto berhasil di ubah', ToastAndroid.SHORT);
+      })
+      .catch(() => {
+        ToastAndroid.show('Foto gagal di ubah', ToastAndroid.SHORT);
+      });
+  }
+
   renderFileUri = () => {
-    const { fullname } = this.state;
-    if (this.state.fileUri) {
+    const { fullname, photo, fileUri } = this.state;
+    if (fileUri) {
       return <Avatar
         // rounded
         size="xlarge"
         title={fullname ? fullname.slice(0, 2) : '-'}
         onPress={() => this.chooseImage()}
-        source={{ uri: this.state.fileUri }}
+        source={{ uri: fileUri }}
         // eslint-disable-next-line react-native/no-inline-styles
         overlayContainerStyle={{ backgroundColor: '#bcbec1' }}
         activeOpacity={0.7}
@@ -84,6 +120,7 @@ export class EditProfile extends Component {
         size="xlarge"
         title={fullname ? fullname.slice(0, 2) : '-'}
         onPress={() => this.chooseImage()}
+        source={{ uri: photo }}
         // eslint-disable-next-line react-native/no-inline-styles
         overlayContainerStyle={{ backgroundColor: '#bcbec1' }}
         activeOpacity={0.7}

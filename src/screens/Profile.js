@@ -58,7 +58,7 @@ export class Profile extends Component {
   }
 
   render() {
-    const { fullname, email, phone } = this.props.auth;
+    const { fullname, email, phone, photo } = this.props.auth;
     const { location, shareLocation } = this.props.profile;
     const list = [
       {
@@ -82,8 +82,10 @@ export class Profile extends Component {
                 <Avatar
                   // rounded
                   size="medium"
+                  source={{
+                    uri: photo,
+                  }}
                   title={fullname ? fullname.slice(0,2) : '-'}
-                  showEditButton
                   // eslint-disable-next-line react-native/no-inline-styles
                   overlayContainerStyle={{ backgroundColor: '#bcbec1' }}
                   activeOpacity={0.7}
@@ -117,12 +119,6 @@ export class Profile extends Component {
                 chevron
               />
             )}
-            <ListItem
-              key={6}
-              title="Ubah Password"
-              onPress={() => this.props.navigation.navigate('edit_profile')}
-              chevron
-            />
             <ListItem
               key={7}
               title="Logout"

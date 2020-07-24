@@ -12,6 +12,9 @@ export default function Items(props) {
           size="medium"
           title={props.title.slice(0,2)}
           showEditButton
+          source={{
+            uri: props.photo,
+          }}
           // eslint-disable-next-line react-native/no-inline-styles
           overlayContainerStyle={{backgroundColor: '#bcbec1'}}
           activeOpacity={0.7}

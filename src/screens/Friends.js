@@ -1,14 +1,12 @@
 /* eslint-disable prettier/prettier */
 import React, { Component } from 'react';
 import {
-  AppState,
   SafeAreaView,
   ScrollView,
   StyleSheet,
   TouchableOpacity,
   RefreshControl,
   View,
-  ToastAndroid,
 } from 'react-native';
 import { Image, Text } from 'react-native-elements';
 
@@ -100,6 +98,7 @@ export class Friends extends Component {
                   email: val[1].email,
                   phone: val[1].phoneNumber,
                   uid: val[1].uid,
+                  photo: val[1].photo,
                 })}
               >
                 <Item
@@ -108,6 +107,7 @@ export class Friends extends Component {
                   title={val[1].displayName}
                   subtitle={val[1].status ? 'Online' : 'Offline'}
                   url="null"
+                  photo={val[1].photo}
                 />
               </TouchableOpacity>
             ))}

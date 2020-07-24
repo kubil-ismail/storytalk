@@ -14,7 +14,7 @@ import { logout } from '../../redux/actions/authActions';
 
 export class Profile extends Component {
   render() {
-    const { fullname, email, phone, uid } = this.props.route.params;
+    const { fullname, email, phone, uid, photo } = this.props.route.params;
     const list = [
       {
         name: 'Email',
@@ -23,10 +23,6 @@ export class Profile extends Component {
       {
         name: 'Nomor telepon',
         subtitle: phone.replace(/(\d{4})(\d{4})(\d{4})/, '$1-$2-$3'),
-      },
-      {
-        name: 'Lokasi Pengguna',
-        subtitle: 'Jakarta',
       },
     ];
     return (
@@ -41,6 +37,9 @@ export class Profile extends Component {
                   size="medium"
                   title={fullname.slice(0, 2)}
                   showEditButton
+                  source={{
+                    uri: photo,
+                  }}
                   // eslint-disable-next-line react-native/no-inline-styles
                   overlayContainerStyle={{ backgroundColor: '#bcbec1' }}
                   activeOpacity={0.7}

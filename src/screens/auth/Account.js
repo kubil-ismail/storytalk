@@ -6,6 +6,7 @@ import {
   StyleSheet,
   View,
   ToastAndroid,
+  PermissionsAndroid,
 } from 'react-native';
 import { Avatar, Button, Input } from 'react-native-elements';
 import validator from 'validator';
@@ -29,6 +30,29 @@ export class Account extends Component {
     };
   }
 
+  requestGpsPermission = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+        {
+          title: 'Akses lokasi diperlukan',
+          message:
+            'Aktifkan gps kamu sebelum lokasi dibagikan',
+          buttonNegative: 'Cancel',
+          buttonPositive: 'OK',
+        }
+      );
+
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        this.updateProfile();
+      } else {
+        ToastAndroid.show('Lokasi tidak dijinkan', ToastAndroid.SHORT);
+      }
+    } catch (error) {
+      ToastAndroid.show('Terjadi gangguan, coba lagi', ToastAndroid.SHORT);
+    }
+  }
+
   addNew = (data) => {
     Geolocation.getCurrentPosition(info => {
       this.props.location({ location: info.coords });
@@ -42,6 +66,7 @@ export class Account extends Component {
           latitude: info.coords.latitude,
           longitude: info.coords.longitude,
           status: true,
+          photo: 'https://fiverr-res.cloudinary.com/images/t_main1,q_auto,f_auto,q_auto,f_auto/gigs/136697800/original/ad0b0ec86b4d6cc39a8f2350c1979d0be2182691/do-youtube-banner-watermark-avatar-logo-for-your-channel.png',
         })
         .then(() => {
           this.props.account(data);
@@ -118,13 +143,7 @@ export class Account extends Component {
             <Button
               title="Lanjut"
               loading={isLoading}
-              onPress={() => this.updateProfile()}
-              containerStyle={styles.mb_10}
-            />
-            <Button
-              type="outline"
-              title="Kembali"
-              onPress={() => this.props.navigation.navigate('register')}
+              onPress={() => this.requestGpsPermission()}
               containerStyle={styles.mb_10}
             />
           </View>

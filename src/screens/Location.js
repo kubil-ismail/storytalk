@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   ToastAndroid,
   RefreshControl,
+  PermissionsAndroid,
 } from 'react-native';
 import { Button } from 'react-native-elements';
 import { Image, Text } from 'react-native-elements';
@@ -46,6 +47,29 @@ export class Location extends Component {
           isLoading: false,
         });
       });
+  }
+
+  requestGpsPermission = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+        {
+          title: 'Akses lokasi diperlukan',
+          message:
+            'Aktifkan gps kamu sebelum lokasi dibagikan',
+          buttonNegative: 'Cancel',
+          buttonPositive: 'OK',
+        }
+      );
+
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        this.shareLocation();
+      } else {
+        ToastAndroid.show('Lokasi tidak dijinkan', ToastAndroid.SHORT);
+      }
+    } catch (error) {
+      ToastAndroid.show('Terjadi gangguan, coba lagi', ToastAndroid.SHORT);
+    }
   }
 
   shareLocation = () => {
@@ -116,13 +140,13 @@ export class Location extends Component {
             {!shareLocation && (
               <Button
                 title="Bagikan Lokasi"
-                onPress={() => this.shareLocation()}
+                onPress={() => this.requestGpsPermission()}
               />
             )}
             {shareLocation && (
               <Button
                 title="Perbarui Lokasi"
-                onPress={() => this.shareLocation()}
+                onPress={() => this.requestGpsPermission()}
               />
             )}
             {/* Loop Data */}
@@ -141,6 +165,7 @@ export class Location extends Component {
                   title={val[1].displayName}
                   subtitle="Detail lokasi"
                   url="null"
+                  photo={val[1].photo}
                   chevron
                 />
               </TouchableOpacity>

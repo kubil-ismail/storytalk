@@ -82,8 +82,11 @@ export class Profile extends Component {
                 <Avatar
                   // rounded
                   size="medium"
+                  source={{
+                    uri:
+                      'https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg',
+                  }}
                   title={fullname ? fullname.slice(0,2) : '-'}
-                  showEditButton
                   // eslint-disable-next-line react-native/no-inline-styles
                   overlayContainerStyle={{ backgroundColor: '#bcbec1' }}
                   activeOpacity={0.7}

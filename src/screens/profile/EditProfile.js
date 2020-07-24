@@ -9,9 +9,9 @@ import {
 } from 'react-native';
 import { Avatar, Button, Input } from 'react-native-elements';
 import validator from 'validator';
+import ImagePicker from 'react-native-image-picker';
 
 // Imports: Firebase
-import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 
 // Imports: Redux Actions
@@ -26,7 +26,69 @@ export class EditProfile extends Component {
       fullname: fullname,
       phone: phone,
       isLoading: false,
+      filepath: {
+        data: '',
+        uri: '',
+      },
+      fileData: '',
+      fileUri: '',
     };
+  }
+
+  chooseImage = () => {
+    let options = {
+      title: 'Pilih foto',
+      customButtons: [
+        { name: 'customOptionKey', title: 'Choose Photo from Custom Option' },
+      ],
+      storageOptions: {
+        skipBackup: true,
+        path: 'images',
+      },
+    };
+    ImagePicker.showImagePicker(options, (response) => {
+      if (response.didCancel) {
+        ToastAndroid.show('Pilih foto dibatalkan', ToastAndroid.SHORT);
+      } else if (response.error) {
+        ToastAndroid.show('Terdapat kesalahan', ToastAndroid.SHORT);
+      } else if (response.customButton) {
+        ToastAndroid.show('Terdapat kesalahan', ToastAndroid.SHORT);
+      } else if (response.fileSize >= 2077116) {
+        ToastAndroid.show('Maksimal ukuran 2 Mb', ToastAndroid.SHORT);
+      } else {
+        this.setState({
+          filePath: response,
+          fileData: response.data,
+          fileUri: response.uri,
+        });
+      }
+    });
+  }
+
+  renderFileUri = () => {
+    const { fullname } = this.state;
+    if (this.state.fileUri) {
+      return <Avatar
+        // rounded
+        size="xlarge"
+        title={fullname ? fullname.slice(0, 2) : '-'}
+        onPress={() => this.chooseImage()}
+        source={{ uri: this.state.fileUri }}
+        // eslint-disable-next-line react-native/no-inline-styles
+        overlayContainerStyle={{ backgroundColor: '#bcbec1' }}
+        activeOpacity={0.7}
+      />;
+    } else {
+      return <Avatar
+        // rounded
+        size="xlarge"
+        title={fullname ? fullname.slice(0, 2) : '-'}
+        onPress={() => this.chooseImage()}
+        // eslint-disable-next-line react-native/no-inline-styles
+        overlayContainerStyle={{ backgroundColor: '#bcbec1' }}
+        activeOpacity={0.7}
+      />;
+    }
   }
 
   setUpdate = (data) => {
@@ -78,15 +140,7 @@ export class EditProfile extends Component {
         <ScrollView>
           <View style={styles.container}>
             <View style={styles.center}>
-              <Avatar
-                // rounded
-                size="xlarge"
-                title={fullname ? fullname.slice(0, 2) : '-'}
-                showEditButton
-                // eslint-disable-next-line react-native/no-inline-styles
-                overlayContainerStyle={{ backgroundColor: '#bcbec1' }}
-                activeOpacity={0.7}
-              />
+              {this.renderFileUri()}
             </View>
             <Input
               placeholder="Nama Lengkap"

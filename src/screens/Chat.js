@@ -29,6 +29,14 @@ export class Chat extends Component {
       .catch(() => {
         ToastAndroid.show('Terjadi gangguan, coba lagi', ToastAndroid.SHORT);
       });
+    database()
+      .ref(`/Chat/${params.uid}/${uid}`)
+      .set({
+        messages: messages,
+      })
+      .catch(() => {
+        ToastAndroid.show('Terjadi gangguan, coba lagi', ToastAndroid.SHORT);
+      });
   }
 
   // Handle send message

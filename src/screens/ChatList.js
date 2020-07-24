@@ -8,6 +8,7 @@ import {
   View,
   RefreshControl,
 } from 'react-native';
+import { Image, Text } from 'react-native-elements';
 
 // Imports: Firebase
 import database from '@react-native-firebase/database';
@@ -57,7 +58,24 @@ export default class ChatList extends Component {
         >
           <Header title="Obrolan" />
           <View style={styles.container}>
-            {!isLoading && friends_.map((val, key) => (
+            {/* Handle Alert */}
+            {friends_.length === 0 && (
+              <View
+                style={styles.center}
+              >
+                <Image
+                  source={require('../assets/svg/undraw_opened_gi4n.png')}
+                  resizeMode="contain"
+                  style={styles.svg}
+                />
+                <Text h4>Mulai Obrolan</Text>
+                <Text style={styles.textCenter}>
+                  Sapa teman barumu dan kami ingatkan hindari membagikan informasi yang sensitif
+                </Text>
+              </View>
+            )}
+            {/* Loop Data */}
+            {!isLoading && friends_.length >= 1 && friends_.map((val, key) => (
               <TouchableOpacity
                 key={key}
                 onPress={() => this.props.navigation.navigate('detail_chat',{
@@ -86,6 +104,18 @@ const styles = StyleSheet.create({
   },
   container: {
     paddingHorizontal: 10,
+  },
+  center: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  textCenter: {
+    textAlign: 'center',
+  },
+  svg: {
+    width: 250,
+    height: 200,
+    marginTop: 50,
   },
   title: {
     fontSize: 20,

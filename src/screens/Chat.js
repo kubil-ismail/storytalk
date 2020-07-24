@@ -19,7 +19,7 @@ export class Chat extends Component {
   }
 
   sendChat = (messages) => {
-    const { uid } = this.props.auth; // User Data Id
+    const { uid, fullname } = this.props.auth; // User Data Id
     const { params } = this.props.route; // Sender Data Id
     database()
       .ref(`/Chat/${uid}/${params.uid}`)
@@ -33,6 +33,7 @@ export class Chat extends Component {
       .ref(`/Chat/${params.uid}/${uid}`)
       .set({
         messages: messages,
+        sender: fullname,
       })
       .catch(() => {
         ToastAndroid.show('Terjadi gangguan, coba lagi', ToastAndroid.SHORT);
@@ -43,22 +44,6 @@ export class Chat extends Component {
   onSend = (msg) => {
     const newData = [...msg, ...this.state.messages];
     this.sendChat(newData);
-  }
-
-  // Render all chat
-  renderChat = () => {
-    const { uid } = this.props.auth; // User Data Id
-    const { params } = this.props.route; // Sender Data Id
-    database()
-      .ref(`/Chat/${uid}/${params.uid}`)
-      .on('value', snapshot => {
-        const { value } = snapshot._snapshot;
-        if (value !== null ){
-          this.setState({
-            messages: value.messages,
-          });
-        }
-      });
   }
 
   // Pop chat
@@ -87,6 +72,22 @@ export class Chat extends Component {
     );
   }
 
+  // Render all chat
+  renderChat = () => {
+    const { uid } = this.props.auth; // User Data Id
+    const { params } = this.props.route; // Sender Data Id
+    database()
+      .ref(`/Chat/${uid}/${params.uid}`)
+      .on('value', snapshot => {
+        const { value } = snapshot._snapshot;
+        if (value !== null ){
+          this.setState({
+            messages: value.messages,
+          });
+        }
+      });
+  }
+
   componentDidMount = () => {
     this.renderChat();
   }
@@ -99,6 +100,7 @@ export class Chat extends Component {
         messages={messages}
         onSend={msg => this.onSend(msg)}
         renderBubble={this.renderBubble}
+        renderUsernameOnMessage={true}
         user={{
           _id: uid,
           name: fullname,

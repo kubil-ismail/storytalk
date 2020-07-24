@@ -80,13 +80,13 @@ export default class ChatList extends Component {
                 key={key}
                 onPress={() => this.props.navigation.navigate('detail_chat',{
                   name: val[1].displayName,
-                  uid: val[1].uid,
+                  chat: val[1].uid,
                 })}
               >
                 <Item
                   id={key}
                   title={val[1].displayName}
-                  subtitle={'Oke Mantul Bosq'}
+                  subtitle={val[1].status ? 'Online' : 'Offline'}
                 />
               </TouchableOpacity>
             ))}

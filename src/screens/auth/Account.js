@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import { Avatar, Button, Input } from 'react-native-elements';
 import validator from 'validator';
+import Geolocation from '@react-native-community/geolocation';
 
 // Imports: Firebase
 import database from '@react-native-firebase/database';
@@ -16,6 +17,7 @@ import database from '@react-native-firebase/database';
 // Imports: Redux Actions
 import { connect } from 'react-redux';
 import { account, login } from '../../redux/actions/authActions';
+import { location } from '../../redux/actions/profileActions';
 
 export class Account extends Component {
   constructor(props) {
@@ -28,30 +30,34 @@ export class Account extends Component {
   }
 
   addNew = (data) => {
-    database()
-      .ref(`/Users/${data.uid}`)
-      .set({
-        displayName: data.displayName,
-        phoneNumber: data.phoneNumber,
-        email: data.email,
-        uid: data.uid,
-        latitude: '0',
-        longitude: '0',
-        status: true,
-      })
-      .then(() => {
-        this.props.account(data);
-        this.props.login({
+    Geolocation.getCurrentPosition(info => {
+      this.props.location({ location: info.coords });
+      database()
+        .ref(`/Users/${data.uid}`)
+        .set({
+          displayName: data.displayName,
+          phoneNumber: data.phoneNumber,
           email: data.email,
           uid: data.uid,
+          latitude: info.coords.latitude,
+          longitude: info.coords.longitude,
+          status: true,
+        })
+        .then(() => {
+          this.props.account(data);
+          this.props.login({
+            email: data.email,
+            uid: data.uid,
+          });
+          this.setState({ isLoading: false });
+          ToastAndroid.show('Berhasil Login', ToastAndroid.SHORT);
+        })
+        .catch(() => {
+          ToastAndroid.show('Terjadi gangguan, coba lagi', ToastAndroid.SHORT);
         });
-        this.setState({ isLoading: false });
-        ToastAndroid.show('Berhasil Login', ToastAndroid.SHORT);
-      })
-      .catch(() => {
-        ToastAndroid.show('Terjadi gangguan, coba lagi', ToastAndroid.SHORT);
-      });
+    });
   }
+
 
   updateProfile = async () => {
     const { fullname, phone } = this.state;
@@ -163,6 +169,7 @@ const mapStateToProps = (state) => {
   // Redux Store --> Component
   return {
     auth: state.authReducer,
+    profile: state.profileReducer,
   };
 };
 
@@ -172,6 +179,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     account: (request) => dispatch(account(request)),
     login: (request) => dispatch(login(request)),
+    location: (request) => dispatch(location(request)),
   };
 };
 

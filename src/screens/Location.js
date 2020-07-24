@@ -32,9 +32,10 @@ export class Location extends Component {
       friends_: [],
       isLoading: true,
     };
+    this.getAllLocation();
   }
 
-  getAllFriends = () => {
+  getAllLocation = () => {
     database()
       .ref('/Users')
       .on('value', snapshot => {
@@ -67,7 +68,16 @@ export class Location extends Component {
   }
 
   componentDidMount = () => {
-    this.getAllFriends();
+    database()
+      .ref('/Users')
+      .off('value', snapshot => {
+        const { value } = snapshot._snapshot;
+        const result = Object.keys(value).map((key) => [Number(key), value[key]]);
+        this.setState({
+          friends_: result,
+          isLoading: false,
+        });
+      });
   }
 
   render() {
@@ -80,7 +90,7 @@ export class Location extends Component {
             <RefreshControl
               refreshing={isLoading}
               progressViewOffset={100}
-              onRefresh={this.getAllFriends()}
+              onRefresh={this.getAllLocation()}
             />
           }
         >

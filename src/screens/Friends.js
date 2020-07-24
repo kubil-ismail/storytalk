@@ -1,12 +1,14 @@
 /* eslint-disable prettier/prettier */
 import React, { Component } from 'react';
 import {
+  AppState,
   SafeAreaView,
   ScrollView,
   StyleSheet,
   TouchableOpacity,
   RefreshControl,
   View,
+  ToastAndroid,
 } from 'react-native';
 import { Image, Text } from 'react-native-elements';
 
@@ -28,6 +30,7 @@ export class Friends extends Component {
       friends_: [],
       isLoading: true,
     };
+    this.getAllFriends();
   }
 
   getAllFriends = () => {
@@ -44,7 +47,16 @@ export class Friends extends Component {
   }
 
   componentDidMount = () => {
-    this.getAllFriends();
+    database()
+      .ref('/Users')
+      .off('value', snapshot => {
+        const { value } = snapshot._snapshot;
+        const result = Object.keys(value).map((key) => [Number(key), value[key]]);
+        this.setState({
+          friends_: result,
+          isLoading: false,
+        });
+      });
   }
 
   render() {

@@ -12,6 +12,7 @@ import validator from 'validator';
 
 // Imports: Firebase
 import auth from '@react-native-firebase/auth';
+import database from '@react-native-firebase/database';
 
 // Imports: Redux Actions
 import { connect } from 'react-redux';
@@ -28,6 +29,19 @@ export class EditProfile extends Component {
     };
   }
 
+  setUpdate = (data) => {
+    const { uid } = this.props.auth;
+    database()
+      .ref(`/Users/${uid}`)
+      .update(data)
+      .then(() => {
+        ToastAndroid.show('Update profile berhasil', ToastAndroid.SHORT);
+      })
+      .catch(() => {
+        ToastAndroid.show('Terjadi gangguan, coba lagi', ToastAndroid.SHORT);
+      });
+  }
+
   updateProfile = async () => {
     const { fullname, phone } = this.state;
     if (fullname && phone) {
@@ -39,10 +53,9 @@ export class EditProfile extends Component {
               displayName: fullname,
               phoneNumber: phone,
             };
-            await auth().currentUser.updateProfile(update);
+            this.setUpdate(update);
             this.props.account(update);
             this.setState({ isLoading: false });
-            ToastAndroid.show('Update profile berhasil', ToastAndroid.SHORT);
           } catch (error) {
             this.setState({ isLoading: false });
             ToastAndroid.show(error.code, ToastAndroid.SHORT);

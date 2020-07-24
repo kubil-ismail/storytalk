@@ -87,6 +87,7 @@ export class Friends extends Component {
                   fullname: val[1].displayName,
                   email: val[1].email,
                   phone: val[1].phoneNumber,
+                  uid: val[1].uid,
                 })}
               >
                 <Item

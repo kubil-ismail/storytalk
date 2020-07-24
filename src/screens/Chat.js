@@ -1,45 +1,61 @@
 /* eslint-disable prettier/prettier */
 import React, { Component } from 'react';
 import { GiftedChat, Bubble } from 'react-native-gifted-chat';
+import { ToastAndroid } from 'react-native';
 
-export default class Chat extends Component {
+// Imports: Firebase
+import database from '@react-native-firebase/database';
+
+// Imports: Redux Actions
+import { connect } from 'react-redux';
+import { account, login } from '../redux/actions/authActions';
+
+export class Chat extends Component {
   constructor(props) {
     super(props);
-    const { name, chat } = props.route.params;
     this.state = {
-      messages: [
-        {
-          _id: 1,
-          text: chat,
-          createdAt: new Date(),
-          user: {
-            _id: 2,
-            name: name,
-          },
-        },
-      ],
+      messages: [],
     };
+  }
+
+  sendChat = (messages) => {
+    const { uid } = this.props.auth; // User Data Id
+    const { params } = this.props.route; // Sender Data Id
+    database()
+      .ref(`/Chat/${uid}/${params.uid}`)
+      .set({
+        messages: messages,
+      })
+      .catch(() => {
+        ToastAndroid.show('Terjadi gangguan, coba lagi', ToastAndroid.SHORT);
+      });
   }
 
   // Handle send message
   onSend = (msg) => {
-    this.setState(previousState => ({
-      messages: GiftedChat.append(previousState.messages, {
-        _id: msg[0]._id,
-        text: msg[0].text,
-        createdAt: msg[0].createdAt,
-        user: {
-          _id: msg[0].user._id,
-          name: msg[0].user.name,
-        },
-      }),
-    }));
+    const newData = [...msg, ...this.state.messages];
+    this.sendChat(newData);
+  }
+
+  // Render all chat
+  renderChat = () => {
+    const { uid } = this.props.auth; // User Data Id
+    const { params } = this.props.route; // Sender Data Id
+    database()
+      .ref(`/Chat/${uid}/${params.uid}`)
+      .on('value', snapshot => {
+        const { value } = snapshot._snapshot;
+        if (value !== null ){
+          this.setState({
+            messages: value.messages,
+          });
+        }
+      });
   }
 
   // Pop chat
   renderBubble = (props) => {
     return (
-      // Step 3: return the component
       <Bubble
         {...props}
         wrapperStyle={{
@@ -63,7 +79,12 @@ export default class Chat extends Component {
     );
   }
 
+  componentDidMount = () => {
+    this.renderChat();
+  }
+
   render() {
+    const { fullname, uid } = this.props.auth;
     const { messages } = this.state;
     return (
       <GiftedChat
@@ -71,8 +92,8 @@ export default class Chat extends Component {
         onSend={msg => this.onSend(msg)}
         renderBubble={this.renderBubble}
         user={{
-          _id: 1,
-          name: 'User',
+          _id: uid,
+          name: fullname,
         }}
         showUserAvatar
         scrollToBottom
@@ -81,3 +102,23 @@ export default class Chat extends Component {
     );
   }
 }
+
+// Map State To Props (Redux Store Passes State To Component)
+const mapStateToProps = (state) => {
+  // Redux Store --> Component
+  return {
+    auth: state.authReducer,
+  };
+};
+
+// Map Dispatch To Props (Dispatch Actions To Reducers. Reducers Then Modify The Data And Assign It To Your Props)
+const mapDispatchToProps = (dispatch) => {
+  // Action
+  return {
+    account: (request) => dispatch(account(request)),
+    login: (request) => dispatch(login(request)),
+  };
+};
+
+// Exports
+export default connect(mapStateToProps, mapDispatchToProps)(Chat);

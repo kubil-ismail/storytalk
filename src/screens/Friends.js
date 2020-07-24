@@ -1,14 +1,12 @@
 /* eslint-disable prettier/prettier */
 import React, { Component } from 'react';
 import {
-  AppState,
   SafeAreaView,
   ScrollView,
   StyleSheet,
   TouchableOpacity,
   RefreshControl,
   View,
-  ToastAndroid,
 } from 'react-native';
 import { Image, Text } from 'react-native-elements';
 

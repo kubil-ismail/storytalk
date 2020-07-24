@@ -6,6 +6,7 @@ import {
   StyleSheet,
   View,
   ToastAndroid,
+  PermissionsAndroid,
 } from 'react-native';
 import { Avatar, Button, Input } from 'react-native-elements';
 import validator from 'validator';
@@ -27,6 +28,29 @@ export class Account extends Component {
       phone: null,
       isLoading: false,
     };
+  }
+
+  requestGpsPermission = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+        {
+          title: 'Akses lokasi diperlukan',
+          message:
+            'Aktifkan gps kamu sebelum lokasi dibagikan',
+          buttonNegative: 'Cancel',
+          buttonPositive: 'OK',
+        }
+      );
+
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        this.updateProfile();
+      } else {
+        ToastAndroid.show('Lokasi tidak dijinkan', ToastAndroid.SHORT);
+      }
+    } catch (error) {
+      ToastAndroid.show('Terjadi gangguan, coba lagi', ToastAndroid.SHORT);
+    }
   }
 
   addNew = (data) => {
@@ -118,13 +142,7 @@ export class Account extends Component {
             <Button
               title="Lanjut"
               loading={isLoading}
-              onPress={() => this.updateProfile()}
-              containerStyle={styles.mb_10}
-            />
-            <Button
-              type="outline"
-              title="Kembali"
-              onPress={() => this.props.navigation.navigate('register')}
+              onPress={() => this.requestGpsPermission()}
               containerStyle={styles.mb_10}
             />
           </View>

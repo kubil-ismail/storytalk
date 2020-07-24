@@ -165,6 +165,7 @@ export class Location extends Component {
                   title={val[1].displayName}
                   subtitle="Detail lokasi"
                   url="null"
+                  photo={val[1].photo}
                   chevron
                 />
               </TouchableOpacity>

@@ -7,6 +7,7 @@ const initialState = {
   email: null,
   fullname: null,
   phone: null,
+  photo: false,
   newUser: false,
 };
 
@@ -42,12 +43,13 @@ const authReducer = (state = initialState, action) => {
     }
     // Set Profile
     case 'ACCOUNT': {
-      const { displayName, phoneNumber } = action.payload;
+      const { displayName, phoneNumber, photo } = action.payload;
       return {
         ...state,
         ...{
           fullname: displayName,
           phone: phoneNumber,
+          photo: photo,
         },
       };
     }

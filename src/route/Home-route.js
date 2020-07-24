@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import React, { Component } from 'react';
-import Icon from 'react-native-vector-icons/Ionicons';
+import Icon from 'react-native-vector-icons/FontAwesome5';
 import { StyleSheet } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
@@ -25,7 +25,7 @@ export default class Home extends Component {
         <BottomTab.Screen
           options={{
             tabBarIcon: ({ color, size }) => (
-              <Icon name="people-outline" color={color} size={size} />
+              <Icon name="address-book" color={color} size={size} />
             ),
           }}
           component={Friends}
@@ -34,7 +34,7 @@ export default class Home extends Component {
         <BottomTab.Screen
           options={{
             tabBarIcon: ({ color, size }) => (
-              <Icon name="chatbox-ellipses-outline" color={color} size={size} />
+              <Icon name="comment-alt" color={color} size={size} />
             ),
           }}
           component={ChatList}
@@ -43,7 +43,7 @@ export default class Home extends Component {
         <BottomTab.Screen
           options={{
             tabBarIcon: ({ color, size }) => (
-              <Icon name="md-location-outline" color={color} size={size} />
+              <Icon name="search-location" color={color} size={size} />
             ),
           }}
           component={Location}
@@ -52,7 +52,7 @@ export default class Home extends Component {
         <BottomTab.Screen
           options={{
             tabBarIcon: ({ color, size }) => (
-              <Icon name="ellipsis-horizontal-outline" color={color} size={size} />
+              <Icon name="user-circle" color={color} size={size} />
             ),
           }}
           component={Profile}
@@ -68,6 +68,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#f9f9fa',
     elevation: 0,
     borderTopColor: '#fff',
-    height: 60
+    height: 60,
   },
 });

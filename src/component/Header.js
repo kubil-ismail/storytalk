@@ -3,7 +3,7 @@ import React from 'react';
 import { Header } from 'react-native-elements';
 import { StyleSheet } from 'react-native';
 
-import Icon from 'react-native-vector-icons/Ionicons';
+import Icon from 'react-native-vector-icons/FontAwesome5';
 
 export default function Headers(props) {
   return (
@@ -12,7 +12,7 @@ export default function Headers(props) {
       backgroundColor="#fff"
       centerComponent={{ text: props.title || 'Unknown', style: styles.title }}
       rightComponent={
-        <Icon name={props.icon || 'ios-search-outline'} color="#313335" size={20} />
+        <Icon name={props.icon || 'search'} color="#313335" size={20} />
       }
     />
   );

@@ -16,7 +16,7 @@ import database from '@react-native-firebase/database';
 
 // Imports: Redux Actions
 import { connect } from 'react-redux';
-import { login } from '../../redux/actions/authActions';
+import { account, login } from '../../redux/actions/authActions';
 
 export class Login extends Component {
   constructor(props) {
@@ -42,6 +42,15 @@ export class Login extends Component {
       });
   }
 
+  getProfile = (uid) => {
+    database()
+      .ref(`/Users/${uid}`)
+      .once('value')
+      .then(snapshot => {
+        this.props.account(snapshot.val());
+      });
+  }
+
   onLogin = async () => {
     const { email, password } = this.state;
     if (email && password) {
@@ -54,6 +63,7 @@ export class Login extends Component {
               email: authCheck.user.email,
               uid: authCheck.user.uid,
             });
+            this.getProfile(authCheck.user.uid);
             this.setOnline(authCheck.user.uid);
             this.setState({ isLoading: false });
           } catch (error) {
@@ -152,7 +162,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   // Action
   return {
-    // Login
+    account: (request) => dispatch(account(request)),
     login: (request) => dispatch(login(request)),
   };
 };

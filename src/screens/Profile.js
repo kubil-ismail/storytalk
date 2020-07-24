@@ -8,7 +8,6 @@ import {
   ToastAndroid,
 } from 'react-native';
 import { Avatar, ListItem } from 'react-native-elements';
-import auth from '@react-native-firebase/auth';
 
 // Imports: Redux Actions
 import { connect } from 'react-redux';
@@ -18,6 +17,8 @@ import { logout } from '../redux/actions/authActions';
 import Header from '../component/Header';
 import Loader from '../component/Loader';
 
+// Imports: Firebase
+import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 
 export class Profile extends Component {
@@ -55,6 +56,7 @@ export class Profile extends Component {
       ToastAndroid.show('Terdapat kesalahan, Coba lagi', ToastAndroid.SHORT);
     }
   }
+
   render() {
     const { fullname, email, phone } = this.props.auth;
     const { location, shareLocation } = this.props.profile;

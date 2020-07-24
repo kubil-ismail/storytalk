@@ -5,8 +5,10 @@ import {
   ScrollView,
   StyleSheet,
   TouchableOpacity,
+  RefreshControl,
   View,
 } from 'react-native';
+import { Image, Text } from 'react-native-elements';
 
 // Component
 import Header from '../component/Header';
@@ -16,6 +18,7 @@ import Item from '../component/Items';
 import { connect } from 'react-redux';
 import { friends } from '../redux/actions/profileActions';
 
+// Imports: Firebase
 import database from '@react-native-firebase/database';
 
 export class Friends extends Component {
@@ -48,9 +51,34 @@ export class Friends extends Component {
     const { friends_, isLoading } = this.state;
     return (
       <SafeAreaView style={styles.scaffold}>
-        <ScrollView>
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              refreshing={isLoading}
+              progressViewOffset={100}
+              onRefresh={this.getAllFriends()}
+            />
+          }
+        >
           <Header title="Teman" />
           <View style={styles.container}>
+            {/* Handle Alert */}
+            {friends_.length === 0 && (
+              <View
+                style={styles.center}
+              >
+                <Image
+                  source={require('../assets/svg/undraw_messages1_9ah2.png')}
+                  resizeMode="contain"
+                  style={styles.svg}
+                />
+                <Text h4>Cari Teman</Text>
+                <Text style={styles.textCenter}>
+                  Ajak temanmu untuk gabung di storytalk dan mulai ceritakan pengalamanmu hari ini
+                </Text>
+              </View>
+            )}
+            {/* Loop Data */}
             {!isLoading && friends_.map((val, key) => (
               <TouchableOpacity
                 key={key}
@@ -84,6 +112,18 @@ const styles = StyleSheet.create({
   },
   container: {
     paddingHorizontal: 10,
+  },
+  center: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  textCenter: {
+    textAlign: 'center',
+  },
+  svg: {
+    width: 250,
+    height: 200,
+    marginTop: 50,
   },
   title: {
     fontSize: 20,

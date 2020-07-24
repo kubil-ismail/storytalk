@@ -8,6 +8,9 @@ import {
   ToastAndroid,
 } from 'react-native';
 import { Button, Input, Text } from 'react-native-elements';
+import validator from 'validator';
+
+// Imports: Firebase
 import auth from '@react-native-firebase/auth';
 
 // Imports: Redux Actions
@@ -29,27 +32,31 @@ export class Register extends Component {
   onRegist = async () => {
     const { email, password, password2 } = this.state;
     if (email && password && password2) {
-      if (password.length >= 8) {
-        if (password === password2) {
-          this.setState({ isLoading: true });
-          try {
-            const authCheck = await auth().createUserWithEmailAndPassword(email, password);
-            this.props.register({
-              email: authCheck.user.email,
-              uid: authCheck.user.uid,
-            });
-            ToastAndroid.show('Daftar Sukses', ToastAndroid.SHORT);
-            this.setState({ isLoading: false });
-            this.props.navigation.navigate('account');
-          } catch (error) {
-            ToastAndroid.show(error.code, ToastAndroid.SHORT);
-            this.setState({ isLoading: false });
+      if (validator.isEmail(email)) {
+        if (validator.isByteLength(password, { min: 8, max: 14 })) {
+          if (password === password2) {
+            this.setState({ isLoading: true });
+            try {
+              const authCheck = await auth().createUserWithEmailAndPassword(email, password);
+              this.props.register({
+                email: authCheck.user.email,
+                uid: authCheck.user.uid,
+              });
+              ToastAndroid.show('Daftar Sukses', ToastAndroid.SHORT);
+              this.setState({ isLoading: false });
+              this.props.navigation.navigate('account');
+            } catch (error) {
+              ToastAndroid.show(error.code, ToastAndroid.SHORT);
+              this.setState({ isLoading: false });
+            }
+          } else {
+            ToastAndroid.show('Password tidak cocok', ToastAndroid.SHORT);
           }
         } else {
-          ToastAndroid.show('Password tidak cocok', ToastAndroid.SHORT);
+          ToastAndroid.show('Password minimum 8 - 14 karakter', ToastAndroid.SHORT);
         }
       } else {
-        ToastAndroid.show('Password minimum 8 karakter', ToastAndroid.SHORT);
+        ToastAndroid.show('Email harus valid', ToastAndroid.SHORT);
       }
     } else {
       ToastAndroid.show('Semua input harus terpenuhi', ToastAndroid.SHORT);
@@ -70,12 +77,12 @@ export class Register extends Component {
               keyboardType="email-address"
             />
             <Input
-              placeholder="Kata Sandi (8 - 12 karakter)"
+              placeholder="Password (8 - 14 karakter)"
               onChangeText={(e) => this.setState({ password: e })}
               secureTextEntry
             />
             <Input
-              placeholder="Konfirmasi Kata Sandi"
+              placeholder="Konfirmasi Password"
               onChangeText={(e) => this.setState({ password2: e })}
               secureTextEntry
             />

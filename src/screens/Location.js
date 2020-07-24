@@ -7,9 +7,14 @@ import {
   View,
   TouchableOpacity,
   ToastAndroid,
+  RefreshControl,
 } from 'react-native';
 import { Button } from 'react-native-elements';
+import { Image, Text } from 'react-native-elements';
 import Geolocation from '@react-native-community/geolocation';
+
+// Imports: Firebase
+import database from '@react-native-firebase/database';
 
 // Imports: Redux Actions
 import { connect } from 'react-redux';
@@ -19,18 +24,6 @@ import { location } from '../redux/actions/profileActions';
 import Header from '../component/Header';
 import Item from '../component/Items';
 
-const list = [
-  {
-    name: 'Amy Farha',
-    subtitle: 'Dibagikan 1 jam yang lalu',
-  },
-  {
-    name: 'Chris Jackson',
-    subtitle: 'Dibagikan 1 jam yang lalu',
-  },
-];
-
-import database from '@react-native-firebase/database';
 
 export class Location extends Component {
   constructor(props) {
@@ -82,9 +75,34 @@ export class Location extends Component {
     const { friends_, isLoading } = this.state;
     return (
       <SafeAreaView style={styles.scaffold}>
-        <ScrollView>
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              refreshing={isLoading}
+              progressViewOffset={100}
+              onRefresh={this.getAllFriends()}
+            />
+          }
+        >
           <Header title="Lokasi" />
           <View style={styles.container}>
+            {/* Handle Alert */}
+            {friends_.length === 0 && (
+              <View
+                style={styles.center}
+              >
+                <Image
+                  source={require('../assets/svg/undraw_Map_dark_k9pw.png')}
+                  resizeMode="contain"
+                  style={styles.svg}
+                />
+                <Text h4>Lokasi Teman</Text>
+                <Text style={styles.textCenter}>
+                  Lihat lokasi teman mu dan mulai sapa mereka
+                </Text>
+              </View>
+            )}
+            {/* Button Location */}
             {!shareLocation && (
               <Button
                 title="Bagikan Lokasi"
@@ -97,6 +115,7 @@ export class Location extends Component {
                 onPress={() => this.shareLocation()}
               />
             )}
+            {/* Loop Data */}
             {!isLoading && friends_.map((val, key) => (
               <TouchableOpacity
                 key={key}
@@ -130,6 +149,19 @@ const styles = StyleSheet.create({
   },
   container: {
     paddingHorizontal: 10,
+  },
+  center: {
+    flex: 1,
+    alignItems: 'center',
+    marginBottom: 30,
+  },
+  textCenter: {
+    textAlign: 'center',
+  },
+  svg: {
+    width: 250,
+    height: 200,
+    marginTop: 50,
   },
   title: {
     fontSize: 20,

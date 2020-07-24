@@ -8,6 +8,9 @@ import {
   ToastAndroid,
 } from 'react-native';
 import { Button, Input, Text } from 'react-native-elements';
+import validator from 'validator';
+
+// Imports: Firebase
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 
@@ -42,18 +45,26 @@ export class Login extends Component {
   onLogin = async () => {
     const { email, password } = this.state;
     if (email && password) {
-      this.setState({ isLoading: true });
-      try {
-        const authCheck = await auth().signInWithEmailAndPassword(email,password);
-        this.props.login({
-          email: authCheck.user.email,
-          uid: authCheck.user.uid,
-        });
-        this.setOnline(authCheck.user.uid);
-        this.setState({ isLoading: false });
-      } catch (error) {
-        ToastAndroid.show(error.code, ToastAndroid.SHORT);
-        this.setState({ isLoading: false });
+      if (validator.isEmail(email)) {
+        if (validator.isByteLength(password, { min: 8, max: 14 })) {
+          this.setState({ isLoading: true });
+          try {
+            const authCheck = await auth().signInWithEmailAndPassword(email,password);
+            this.props.login({
+              email: authCheck.user.email,
+              uid: authCheck.user.uid,
+            });
+            this.setOnline(authCheck.user.uid);
+            this.setState({ isLoading: false });
+          } catch (error) {
+            ToastAndroid.show(error.code, ToastAndroid.SHORT);
+            this.setState({ isLoading: false });
+          }
+        } else {
+          ToastAndroid.show('Password harus valid', ToastAndroid.SHORT);
+        }
+      } else {
+        ToastAndroid.show('Email harus valid', ToastAndroid.SHORT);
       }
     } else {
       ToastAndroid.show('Semua input harus terpenuhi', ToastAndroid.SHORT);
@@ -76,7 +87,7 @@ export class Login extends Component {
               keyboardType="email-address"
             />
             <Input
-              placeholder="Kata Sandi"
+              placeholder="Password"
               onChangeText={(e) => this.setState({ password: e })}
               secureTextEntry
             />

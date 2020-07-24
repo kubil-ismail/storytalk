@@ -8,6 +8,7 @@ import {
   ToastAndroid,
 } from 'react-native';
 import { Avatar, Button, Input } from 'react-native-elements';
+import validator from 'validator';
 
 // Imports: Firebase
 import database from '@react-native-firebase/database';
@@ -55,19 +56,27 @@ export class Account extends Component {
   updateProfile = async () => {
     const { fullname, phone } = this.state;
     if (fullname && phone) {
-      try {
-        this.setState({ isLoading: true });
-        const { email, uid } = this.props.auth;
-        const update = {
-          displayName: fullname,
-          phoneNumber: phone,
-          email: email,
-          uid: uid,
-        };
-        this.addNew(update);
-      } catch (error) {
-        this.setState({ isLoading: false });
-        ToastAndroid.show(error.code, ToastAndroid.SHORT);
+      if (validator.isByteLength(fullname, { min: 2, max: 25 })) {
+        if (validator.isMobilePhone(phone, ['id-ID'])) {
+          try {
+            this.setState({ isLoading: true });
+            const { email, uid } = this.props.auth;
+            const update = {
+              displayName: validator.trim(fullname),
+              phoneNumber: phone,
+              email: email,
+              uid: uid,
+            };
+            this.addNew(update);
+          } catch (error) {
+            this.setState({ isLoading: false });
+            ToastAndroid.show(error.code, ToastAndroid.SHORT);
+          }
+        } else {
+          ToastAndroid.show('No Telephone harus valid', ToastAndroid.SHORT);
+        }
+      } else {
+        ToastAndroid.show('Panjang nama 2 - 5 karakter', ToastAndroid.SHORT);
       }
     } else {
       ToastAndroid.show('Semua input harus terpenuhi', ToastAndroid.SHORT);
@@ -97,6 +106,7 @@ export class Account extends Component {
             />
             <Input
               placeholder="No Telephone"
+              keyboardType="number-pad"
               onChangeText={(e) => this.setState({ phone: e })}
             />
             <Button

@@ -38,9 +38,12 @@ target 'storytalk' do
 
   pod 'react-native-maps', :path => '../node_modules/react-native-maps'
 
-  pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
 
   pod 'RNCAsyncStorage', :path => '../node_modules/@react-native-community/async-storage'
+
+  pod 'react-native-splash-screen', :path => '../node_modules/react-native-splash-screen'
+
+  pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
 
   target 'storytalkTests' do
     inherit! :search_paths

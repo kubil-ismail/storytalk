@@ -14,7 +14,7 @@ import { logout } from '../../redux/actions/authActions';
 
 export class Profile extends Component {
   render() {
-    const { fullname, email, phone } = this.props.route.params;
+    const { fullname, email, phone, uid } = this.props.route.params;
     const list = [
       {
         name: 'Email',
@@ -51,7 +51,7 @@ export class Profile extends Component {
               bottomDivider
               onPress={() => this.props.navigation.navigate('detail_chat', {
                 name: fullname,
-                chat: 'Hello',
+                uid: uid,
               })}
               chevron
             />

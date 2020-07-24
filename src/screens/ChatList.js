@@ -80,7 +80,7 @@ export default class ChatList extends Component {
                 key={key}
                 onPress={() => this.props.navigation.navigate('detail_chat',{
                   name: val[1].displayName,
-                  chat: 'Oke Mantul Bos',
+                  uid: val[1].uid,
                 })}
               >
                 <Item

@@ -186,6 +186,7 @@ export class EditProfile extends Component {
             />
             <Input
               placeholder="No Telephone"
+              keyboardType="number-pad"
               defaultValue={phone}
               onChangeText={(e) => this.setState({ phone: e })}
             />

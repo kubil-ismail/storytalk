@@ -5,28 +5,22 @@ import {
   ScrollView,
   StyleSheet,
   TouchableOpacity,
-  RefreshControl,
   View,
 } from 'react-native';
-import { Image, Text } from 'react-native-elements';
+import { SearchBar, Image, Text } from 'react-native-elements';
 
-// Component
-import Header from '../component/Header';
 import Item from '../component/Items';
-
-// Imports: Redux Actions
-import { connect } from 'react-redux';
-import { friends } from '../redux/actions/profileActions';
 
 // Imports: Firebase
 import database from '@react-native-firebase/database';
 
-export class Friends extends Component {
+export default class Search extends Component {
   constructor(props) {
     super(props);
     this.state = {
       friends_: [],
       isLoading: true,
+      search: null,
     };
     this.getAllFriends();
   }
@@ -55,22 +49,26 @@ export class Friends extends Component {
           isLoading: false,
         });
       });
+
   }
+  updateSearch = (search) => {
+    this.setState({ search });
+    this.getAllFriends();
+  };
 
   render() {
-    const { friends_, isLoading } = this.state;
+    const { friends_, isLoading, search } = this.state;
     return (
       <SafeAreaView style={styles.scaffold}>
-        <ScrollView
-          refreshControl={
-            <RefreshControl
-              refreshing={isLoading}
-              progressViewOffset={100}
-              onRefresh={this.getAllFriends()}
-            />
-          }
-        >
-          <Header title="Teman" {...this.props} />
+        <ScrollView>
+          <SearchBar
+            lightTheme
+            placeholder="Nama pengguna..."
+            onChangeText={this.updateSearch}
+            value={search}
+            // eslint-disable-next-line react-native/no-inline-styles
+            containerStyle={{ backgroundColor: '#fff' }}
+          />
           <View style={styles.container}>
             {/* Handle Alert */}
             {friends_.length === 0 && (
@@ -85,32 +83,50 @@ export class Friends extends Component {
                 <Text h4>Cari Teman</Text>
                 <Text style={styles.textCenter}>
                   Ajak temanmu untuk gabung di storytalk dan mulai ceritakan pengalamanmu hari ini
-                </Text>
+                    </Text>
               </View>
             )}
             {/* Loop Data */}
-            {!isLoading && friends_.map((val, key) => (
-              <TouchableOpacity
-                key={key}
-                onPress={() => this.props.navigation.navigate('detail_profile', {
-                  name: val[1].displayName,
-                  fullname: val[1].displayName,
-                  email: val[1].email,
-                  phone: val[1].phoneNumber,
-                  uid: val[1].uid,
-                  photo: val[1].photo,
-                })}
+            {!isLoading && search !== null ? friends_.map((val, key) => {
+              if (val[1].displayName === search) {
+                return (
+                  <TouchableOpacity
+                    key={key}
+                    onPress={() => this.props.navigation.navigate('detail_profile', {
+                      name: val[1].displayName,
+                      fullname: val[1].displayName,
+                      email: val[1].email,
+                      phone: val[1].phoneNumber,
+                      uid: val[1].uid,
+                      photo: val[1].photo,
+                    })}
+                  >
+                    <Item
+                      id={key}
+                      key={key}
+                      title={val[1].displayName}
+                      subtitle={val[1].status ? 'Online' : 'Offline'}
+                      url="null"
+                      photo={val[1].photo}
+                    />
+                  </TouchableOpacity>
+                );
+              }
+            }) : (
+              <View
+                style={styles.center}
               >
-                <Item
-                  id={key}
-                  key={key}
-                  title={val[1].displayName}
-                  subtitle={val[1].status ? 'Online' : 'Offline'}
-                  url="null"
-                  photo={val[1].photo}
+                <Image
+                  source={require('../assets/svg/undraw_messages1_9ah2.png')}
+                  resizeMode="contain"
+                  style={styles.svg}
                 />
-              </TouchableOpacity>
-            ))}
+                <Text h4>Cari Teman</Text>
+                <Text style={styles.textCenter}>
+                  Ajak temanmu untuk gabung di storytalk dan mulai ceritakan pengalamanmu hari ini
+                  </Text>
+              </View>
+            )}
           </View>
         </ScrollView>
       </SafeAreaView>
@@ -122,6 +138,7 @@ const styles = StyleSheet.create({
   scaffold: {
     backgroundColor: '#fff',
     flex: 1,
+    paddingTop: 20,
   },
   container: {
     paddingHorizontal: 10,
@@ -138,38 +155,5 @@ const styles = StyleSheet.create({
     height: 200,
     marginTop: 50,
   },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#313335',
-  },
-  desc: {
-    marginTop: 30,
-    textAlign: 'center',
-    color: '#86888a',
-    marginBottom: 45,
-  },
-  mb_10: {
-    marginBottom: 10,
-  },
 });
 
-// Map State To Props (Redux Store Passes State To Component)
-const mapStateToProps = (state) => {
-  // Redux Store --> Component
-  return {
-    auth: state.authReducer,
-    profile: state.profileReducer,
-  };
-};
-
-// Map Dispatch To Props (Dispatch Actions To Reducers. Reducers Then Modify The Data And Assign It To Your Props)
-const mapDispatchToProps = (dispatch) => {
-  // Action
-  return {
-    friends: (request) => dispatch(friends(request)),
-  };
-};
-
-// Exports
-export default connect(mapStateToProps, mapDispatchToProps)(Friends);

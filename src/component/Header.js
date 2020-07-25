@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 import React from 'react';
 import { Header } from 'react-native-elements';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, TouchableOpacity } from 'react-native';
 
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
@@ -12,7 +12,11 @@ export default function Headers(props) {
       backgroundColor="#fff"
       centerComponent={{ text: props.title || 'Unknown', style: styles.title }}
       rightComponent={
-        <Icon name={props.icon || 'search'} color="#313335" size={20} />
+        <TouchableOpacity
+          onPress={() => props.navigation.navigate('searchPeople')}
+        >
+          <Icon name={props.icon || 'search'} color="#313335" size={20} />
+        </TouchableOpacity>
       }
     />
   );

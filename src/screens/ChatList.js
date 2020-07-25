@@ -56,7 +56,7 @@ export default class ChatList extends Component {
             />
           }
         >
-          <Header title="Obrolan" />
+          <Header title="Obrolan" {...this.props} />
           <View style={styles.container}>
             {/* Handle Alert */}
             {friends_.length === 0 && (

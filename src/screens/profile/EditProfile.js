@@ -194,6 +194,8 @@ export class EditProfile extends Component {
               onPress={() => this.updateProfile()}
               loading={this.state.isLoading}
               containerStyle={styles.mb_10}
+              // eslint-disable-next-line react-native/no-inline-styles
+              buttonStyle={{ backgroundColor: '#ed5342' }}
             />
           </View>
         </ScrollView>

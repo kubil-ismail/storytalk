@@ -91,10 +91,16 @@ export class Register extends Component {
               loading={this.state.isLoading}
               onPress={() => this.onRegist()}
               containerStyle={styles.mb_10}
+              // eslint-disable-next-line react-native/no-inline-styles
+              buttonStyle={{ backgroundColor: '#ed5342' }}
             />
             <Button
               title="Sudah Punya Akun"
-              type="clear"
+              type="outline"
+              // eslint-disable-next-line react-native/no-inline-styles
+              buttonStyle={{ borderColor: '#ed5342' }}
+              // eslint-disable-next-line react-native/no-inline-styles
+              titleStyle={{ color: '#ed5342' }}
               onPress={() => this.props.navigation.navigate('login')}
             />
           </View>

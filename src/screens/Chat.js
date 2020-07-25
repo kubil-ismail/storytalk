@@ -54,7 +54,7 @@ export class Chat extends Component {
         wrapperStyle={{
           right: {
             // Here is the color change
-            backgroundColor: '#0080f7',
+            backgroundColor: '#ed5342',
           },
           left: {
             backgroundColor: '#fff',

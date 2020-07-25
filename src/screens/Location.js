@@ -141,12 +141,16 @@ export class Location extends Component {
               <Button
                 title="Bagikan Lokasi"
                 onPress={() => this.requestGpsPermission()}
+                // eslint-disable-next-line react-native/no-inline-styles
+                buttonStyle={{ backgroundColor: '#ed5342' }}
               />
             )}
             {shareLocation && (
               <Button
                 title="Perbarui Lokasi"
                 onPress={() => this.requestGpsPermission()}
+                // eslint-disable-next-line react-native/no-inline-styles
+                buttonStyle={{ backgroundColor: '#ed5342' }}
               />
             )}
             {/* Loop Data */}

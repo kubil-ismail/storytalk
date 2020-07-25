@@ -145,6 +145,8 @@ export class Account extends Component {
               loading={isLoading}
               onPress={() => this.requestGpsPermission()}
               containerStyle={styles.mb_10}
+              // eslint-disable-next-line react-native/no-inline-styles
+              buttonStyle={{ backgroundColor: '#ed5342' }}
             />
           </View>
         </ScrollView>

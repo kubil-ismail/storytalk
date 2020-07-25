@@ -106,16 +106,18 @@ export class Login extends Component {
               onPress={() => this.onLogin()}
               loading={this.state.isLoading}
               containerStyle={styles.mb_10}
+              // eslint-disable-next-line react-native/no-inline-styles
+              buttonStyle={{ backgroundColor: '#ed5342' }}
             />
             <Button
               title="Daftar"
               type="outline"
               onPress={() => this.props.navigation.navigate('register')}
               containerStyle={styles.mb_10}
-            />
-            <Button
-              title="Lupa Kata Sandi"
-              type="clear"
+              // eslint-disable-next-line react-native/no-inline-styles
+              buttonStyle={{ borderColor: '#ed5342' }}
+              // eslint-disable-next-line react-native/no-inline-styles
+              titleStyle={{ color:'#ed5342' }}
             />
           </View>
         </ScrollView>

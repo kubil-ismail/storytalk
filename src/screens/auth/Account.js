@@ -66,7 +66,7 @@ export class Account extends Component {
           latitude: info.coords.latitude,
           longitude: info.coords.longitude,
           status: true,
-          photo: 'https://fiverr-res.cloudinary.com/images/t_main1,q_auto,f_auto,q_auto,f_auto/gigs/136697800/original/ad0b0ec86b4d6cc39a8f2350c1979d0be2182691/do-youtube-banner-watermark-avatar-logo-for-your-channel.png',
+          photo: 'https://i.pinimg.com/474x/4c/e4/cc/4ce4cc3c4d47585689e71a8c6163becc.jpg',
         })
         .then(() => {
           this.props.account(data);
@@ -97,6 +97,7 @@ export class Account extends Component {
               phoneNumber: phone,
               email: email,
               uid: uid,
+              photo: 'https://i.pinimg.com/474x/4c/e4/cc/4ce4cc3c4d47585689e71a8c6163becc.jpg',
             };
             this.addNew(update);
           } catch (error) {

@@ -118,7 +118,7 @@ export class Location extends Component {
             />
           }
         >
-          <Header title="Lokasi" />
+          <Header title="Lokasi" {...this.props} />
           <View style={styles.container}>
             {/* Handle Alert */}
             {friends_.length === 0 && (

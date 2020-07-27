@@ -66,7 +66,7 @@ export class Friends extends Component {
             <RefreshControl
               refreshing={isLoading}
               progressViewOffset={100}
-              onRefresh={this.getAllFriends()}
+              onRefresh={() => this.getAllFriends()}
             />
           }
         >

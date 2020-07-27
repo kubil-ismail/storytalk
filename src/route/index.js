@@ -28,8 +28,8 @@ const Stack = createStackNavigator();
 
 export class Route extends Component {
   componentDidMount = () => {
-    const { loggedIn } = this.props.auth;
-    if (loggedIn) {
+    const { loggedIn, uid } = this.props.auth;
+    if (loggedIn && uid) {
       AppState.addEventListener('change', state => {
         if (state === 'active') {
           // On App use

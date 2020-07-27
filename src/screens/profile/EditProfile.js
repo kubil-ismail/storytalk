@@ -6,6 +6,7 @@ import {
   StyleSheet,
   View,
   ToastAndroid,
+  PermissionsAndroid,
 } from 'react-native';
 import { Avatar, Button, Input } from 'react-native-elements';
 import validator from 'validator';
@@ -31,6 +32,29 @@ export class EditProfile extends Component {
       photo: photo,
       fileUri: '',
     };
+  }
+
+  requestCameraPermission = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.CAMERA,
+        {
+          title: 'Akses camera diperlukan',
+          message:
+            'Aktifkan camera kamu terlebih dahulu',
+          buttonNegative: 'Cancel',
+          buttonPositive: 'OK',
+        }
+      );
+
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        this.chooseImage();
+      } else {
+        ToastAndroid.show('Camera tidak dijinkan', ToastAndroid.SHORT);
+      }
+    } catch (error) {
+      ToastAndroid.show('Terjadi gangguan, coba lagi', ToastAndroid.SHORT);
+    }
   }
 
   chooseImage = () => {
@@ -116,7 +140,7 @@ export class EditProfile extends Component {
         // rounded
         size="xlarge"
         title={fullname ? fullname.slice(0, 2) : '-'}
-        onPress={() => this.chooseImage()}
+        onPress={() => this.requestCameraPermission()}
         source={{ uri: fileUri }}
         // eslint-disable-next-line react-native/no-inline-styles
         overlayContainerStyle={{ backgroundColor: '#bcbec1' }}
@@ -127,7 +151,7 @@ export class EditProfile extends Component {
         // rounded
         size="xlarge"
         title={fullname ? fullname.slice(0, 2) : '-'}
-        onPress={() => this.chooseImage()}
+        onPress={() => this.requestCameraPermission()}
         source={{ uri: photo }}
         // eslint-disable-next-line react-native/no-inline-styles
         overlayContainerStyle={{ backgroundColor: '#bcbec1' }}

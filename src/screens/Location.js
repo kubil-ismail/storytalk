@@ -114,7 +114,7 @@ export class Location extends Component {
             <RefreshControl
               refreshing={isLoading}
               progressViewOffset={100}
-              onRefresh={this.getAllLocation()}
+              onRefresh={() => this.getAllLocation()}
             />
           }
         >

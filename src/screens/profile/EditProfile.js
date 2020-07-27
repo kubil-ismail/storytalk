@@ -10,6 +10,7 @@ import {
 import { Avatar, Button, Input } from 'react-native-elements';
 import validator from 'validator';
 import ImagePicker from 'react-native-image-picker';
+import ImageResizer from 'react-native-image-resizer';
 
 // Imports: Firebase
 import database from '@react-native-firebase/database';
@@ -41,7 +42,7 @@ export class EditProfile extends Component {
         path: 'images',
       },
     };
-    ImagePicker.launchImageLibrary(options, (response) => {
+    ImagePicker.showImagePicker(options, (response) => {
       if (response.didCancel) {
         ToastAndroid.show('Pilih foto dibatalkan', ToastAndroid.SHORT);
         this.setState({ isLoading: false });
@@ -51,32 +52,39 @@ export class EditProfile extends Component {
       } else if (response.customButton) {
         ToastAndroid.show('Terdapat kesalahan', ToastAndroid.SHORT);
         this.setState({ isLoading: false });
-      } else if (response.fileSize >= 1077116) {
-        ToastAndroid.show('Maksimal ukuran 1 Mb', ToastAndroid.SHORT);
+      } else if (response.fileSize >= 3077116) {
+        ToastAndroid.show('Maksimal ukuran 3 Mb', ToastAndroid.SHORT);
         this.setState({ isLoading: false });
       } else {
-        const filename = response.fileName;
+        const { uid } = this.props.auth;
+        const filename = response.fileName + '-' + uid;
         const pathToFile = response.path;
-        if (filename && pathToFile) {
-          const reference = storage().ref(filename);
-          reference.putFile(pathToFile)
-            .then(async () => {
-              this.setState({ isLoading: false });
-              this.setState({
-                fileUri: response.uri,
-                isLoading: false,
-              });
-              const url = await storage()
-                .ref(filename)
-                .getDownloadURL();
-              this.updatePhoto(url);
-              ToastAndroid.show('Foto berhasil di ubah', ToastAndroid.SHORT);
-            })
-            .catch(() => {
-              ToastAndroid.show('Foto gagal di ubah', ToastAndroid.SHORT);
-              this.setState({ isLoading: false });
-            });
-        }
+        ImageResizer.createResizedImage(pathToFile, 120, 120, 'PNG', 100)
+          .then((res) => {
+            if (filename && pathToFile) {
+              const reference = storage().ref(filename);
+              reference.putFile(res.uri)
+                .then(async () => {
+                  this.setState({
+                    fileUri: res.uri,
+                    isLoading: false,
+                  });
+                  const url = await storage()
+                    .ref(filename)
+                    .getDownloadURL();
+                  this.updatePhoto(url);
+                  ToastAndroid.show('Foto berhasil di ubah', ToastAndroid.SHORT);
+                })
+                .catch(() => {
+                  ToastAndroid.show('Foto gagal di ubah', ToastAndroid.SHORT);
+                  this.setState({ isLoading: false });
+                });
+            }
+          })
+          .catch(() => {
+            ToastAndroid.show('Foto gagal di ubah', ToastAndroid.SHORT);
+            this.setState({ isLoading: false });
+          });
       }
     });
   }

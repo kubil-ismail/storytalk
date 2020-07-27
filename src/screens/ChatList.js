@@ -24,6 +24,7 @@ export default class ChatList extends Component {
       friends_: [],
       isLoading: true,
     };
+    this.getAllFriends();
   }
 
   getAllFriends = () => {
@@ -40,7 +41,16 @@ export default class ChatList extends Component {
   }
 
   componentDidMount = () => {
-    this.getAllFriends();
+    database()
+      .ref('/Users')
+      .off('value', snapshot => {
+        const { value } = snapshot._snapshot;
+        const result = Object.keys(value).map((key) => [Number(key), value[key]]);
+        this.setState({
+          friends_: result,
+          isLoading: false,
+        });
+      });
   }
 
   render() {
@@ -51,7 +61,7 @@ export default class ChatList extends Component {
           refreshControl={
             <RefreshControl
               refreshing={isLoading}
-              onRefresh={this.getAllFriends()}
+              onRefresh={() => this.getAllFriends()}
               progressViewOffset={100}
             />
           }

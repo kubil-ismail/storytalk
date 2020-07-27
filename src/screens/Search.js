@@ -88,7 +88,7 @@ export default class Search extends Component {
             )}
             {/* Loop Data */}
             {!isLoading && search !== null ? friends_.map((val, key) => {
-              if (val[1].displayName === search) {
+              if (val[1].displayName.includes(search.toLowerCase())) {
                 return (
                   <TouchableOpacity
                     key={key}

@@ -1,9 +1,5 @@
 /* eslint-disable prettier/prettier */
 import React, { Component } from 'react';
-import { AppState, ToastAndroid } from 'react-native';
-
-// Imports: Firebase
-import database from '@react-native-firebase/database';
 
 // Imports: Redux Actions
 import { connect } from 'react-redux';

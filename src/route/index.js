@@ -1,9 +1,5 @@
 /* eslint-disable prettier/prettier */
 import React, { Component } from 'react';
-import { AppState, ToastAndroid } from 'react-native';
-
-// Imports: Firebase
-import database from '@react-native-firebase/database';
 
 // Imports: Redux Actions
 import { connect } from 'react-redux';
@@ -27,54 +23,6 @@ import { createStackNavigator } from '@react-navigation/stack';
 const Stack = createStackNavigator();
 
 export class Route extends Component {
-  componentDidMount = () => {
-    const { loggedIn, uid } = this.props.auth;
-    if (loggedIn && uid) {
-      AppState.addEventListener('change', state => {
-        if (state === 'active') {
-          // On App use
-          this.setOnline();
-        } else if (state === 'background') {
-          // Run background
-          this.setOffline();
-        } else if (state === 'inactive') {
-          // Not active
-          this.setOffline();
-        }
-      });
-    }
-  }
-
-  setOnline = () => {
-    const { uid } = this.props.auth;
-    database()
-      .ref(`/Users/${uid}`)
-      .update({
-        status: true,
-      })
-      .then(() => {
-        ToastAndroid.show('Online', ToastAndroid.SHORT);
-      })
-      .catch(() => {
-        ToastAndroid.show('Terjadi gangguan, coba lagi', ToastAndroid.SHORT);
-      });
-  }
-
-  setOffline = () => {
-    const { uid } = this.props.auth;
-    database()
-      .ref(`/Users/${uid}`)
-      .update({
-        status: false,
-      })
-      .then(() => {
-        ToastAndroid.show('Offline', ToastAndroid.SHORT);
-      })
-      .catch(() => {
-        ToastAndroid.show('Terjadi gangguan, coba lagi', ToastAndroid.SHORT);
-      });
-  }
-
   render() {
     const { loggedIn, regist } = this.props.auth;
     return (

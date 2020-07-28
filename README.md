@@ -25,7 +25,7 @@ npm install
 npm run android
 ```
 
-## ScreenShoot
+## Screenshoot
 ![](https://i.ibb.co/YdWWw4M/story-talk-mockup.jpg)
 
 ## Contributing

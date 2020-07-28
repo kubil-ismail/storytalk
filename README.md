@@ -20,8 +20,9 @@ https://github.com/kubil-ismail/storytalk.git
 Intall dependency.
 
 ```bash
-cd /storytalk
+cd storytalk
 npm install
+npm run android
 ```
 
 ## Contributing

@@ -25,6 +25,9 @@ npm install
 npm run android
 ```
 
+## ScreenShoot
+![](https://i.ibb.co/YdWWw4M/story-talk-mockup.jpg)
+
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 

@@ -26,6 +26,7 @@ npm run android
 ```
 
 ## Screenshoot
+![alt text](https://i.ibb.co/YdWWw4M/story-talk-mockup.jpg)
 ![](https://i.ibb.co/YdWWw4M/story-talk-mockup.jpg)
 
 ## Contributing
